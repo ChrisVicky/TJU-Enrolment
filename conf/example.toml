@@ -1,0 +1,14 @@
+[Program]
+Threads = 4
+
+[[Account]]
+no = "3xxxxxxxxx"
+password = "0xxfffssddafd!"
+courses = ["30113", "03311", "032445"]
+comment = "Test2"
+
+[[Account]]
+no = "30asdffgggiioo"
+password = "1dfakdflsjekf~"
+courses = ["04422", "00122"]
+comment = "Test1"
