@@ -141,6 +141,7 @@ func (e *EClient) downloadCode() (fn string, err error) {
 func (e *EClient) recognizeCode(fn string) (code string, err error) {
 	code, err = ocr.OcrFn(fn)
 	if err != nil {
+		// BUG: In Multithreading situation, this cannot function correctly
 		logger.Warnf("Auto Recognition Failed with: %v", err)
 		logger.Printf("Please take a look at file %v and Type in the code\n>", fn)
 		_, err = fmt.Scan(&code)
@@ -151,6 +152,7 @@ func (e *EClient) recognizeCode(fn string) (code string, err error) {
 
 func (e *EClient) getCode() (code string, err error) {
 	var fn string
+	// BUG: downloading code to local violate the multithreading situation
 	if fn, err = e.downloadCode(); err != nil {
 		return
 	}
