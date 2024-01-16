@@ -33,7 +33,7 @@ func Setup(showLog bool) error {
 		logger.SetOutput(&nullWriter{})
 	}
 
-	logger.SetLevel(logrus.DebugLevel)
+	logger.SetLevel(logrus.TraceLevel)
 	logger.SetFormatter(
 		&prefixed.TextFormatter{
 			DisableColors:   false,
