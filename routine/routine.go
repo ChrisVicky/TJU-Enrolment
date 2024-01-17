@@ -25,15 +25,13 @@ func NewRoutine() (*Routine, error) {
 		return nil, err
 	}
 
-	for _, acc := range r.Ac {
-		for idx := range acc.CourseNo {
-			// TODO: Add Multiple Threads for each course
-			c, err := client.NewEClient(acc.No, acc.Pw, acc.Comment, acc.CourseNo[idx], acc.CourseComment[idx])
-			if err != nil {
-				return nil, err
-			}
-			r.clients = append(r.clients, c)
+	for idx := range r.Ac {
+		// TODO: Add Multiple Threads for each course
+		c, err := client.NewEClient(&r.Ac[idx])
+		if err != nil {
+			return nil, err
 		}
+		r.clients = append(r.clients, c)
 	}
 
 	return r, nil
@@ -55,38 +53,44 @@ func eroutine(c *client.EClient) {
 		return
 	}
 
-	for {
-		if err := c.Select(); err != nil {
-			logger.Warnf("encounter: %v", err)
-			switch err {
-			case client.ErrorSuccess:
-				break
-			case client.ErrorMax2:
-				break
-			case client.ErrorMultiple:
-				break
-			case client.ErrorSelected:
-				break
-			default:
-				time.Sleep(100 * time.Millisecond)
-				c.Refresh()
+	wg := &sync.WaitGroup{}
+	for idx := range c.CourseNo {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			for {
+				if err := c.Select(idx); err != nil {
+					logger.Warnf("encounter: %v", err)
+					switch err {
+					case client.ErrorSuccess:
+						break
+					case client.ErrorMax2:
+						break
+					case client.ErrorMultiple:
+						break
+					case client.ErrorSelected:
+						break
+					default:
+						time.Sleep(100 * time.Millisecond)
+						c.Refresh()
+					}
+				} else {
+					time.Sleep(100 * time.Microsecond)
+				}
 			}
-		} else {
-			time.Sleep(100 * time.Microsecond)
-		}
+		}(idx)
 	}
+	wg.Wait()
 }
 
 func (r *Routine) Run() {
 	wg := &sync.WaitGroup{}
-	for _, c := range r.clients {
+	for idx := range r.clients {
 		wg.Add(1)
 		go func(c *client.EClient) {
 			defer wg.Done()
-			// TODO: Remove Scan
 			eroutine(c)
-		}(c)
+		}(r.clients[idx])
 	}
-
 	wg.Wait()
 }

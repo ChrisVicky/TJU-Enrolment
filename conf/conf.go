@@ -13,8 +13,8 @@ const Fn = "config.toml"
 
 // Account
 type Account struct {
-	No            string   `toml:"no"`             // Student Number
-	Pw            string   `toml:"password"`       // Password
+	StudentNo     string   `toml:"no"`             // Student Number
+	Password      string   `toml:"password"`       // Password
 	Comment       string   `toml:"comment"`        // comment
 	CourseNo      []string `toml:"courses"`        // Course Numbers
 	CourseComment []string `toml:"coursesComment"` // courseNames or others

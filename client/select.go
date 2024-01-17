@@ -1,6 +1,7 @@
 package client
 
 import (
+	"enrollment/logger"
 	"errors"
 	"fmt"
 	"io"
@@ -24,18 +25,21 @@ var keywords = map[string]error{
 }
 
 // Select Class
-func (e *EClient) Select() (err error) {
+//
+// NOTE: sub goroutines share the same `Client` cause issues?
+func (e *EClient) Select(idx int) (err error) {
 	var (
 		resp *http.Response
 		req  *http.Request
 		bd   []byte
 	)
+	logger.Tracef("%s select for %s(%s)", e.Comment, e.CourseNo[idx], e.CourseComment[idx])
 
 	u := fmt.Sprintf("http://classes.tju.edu.cn/eams/stdElectCourse!batchOperator.action?profileId=%v", e.pid)
 
 	data := url.Values{
 		"optype":    {"true"},
-		"operator0": {fmt.Sprintf("%v:true:0", e.courseId)},
+		"operator0": {fmt.Sprintf("%v:true:0", e.CourseNo[idx])},
 	}.Encode()
 	if req, err = http.NewRequest(http.MethodPost, u, strings.NewReader(data)); err != nil {
 		return

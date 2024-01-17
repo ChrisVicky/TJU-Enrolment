@@ -45,7 +45,7 @@ func (e *EClient) Login() (err error) {
 		return
 	}
 
-	if rsa, err = e.GetRsa(e.studentNo, e.password, lt); err != nil {
+	if rsa, err = e.GetRsa(e.StudentNo, e.Password, lt); err != nil {
 		return
 	}
 
@@ -65,8 +65,8 @@ func (e *EClient) ssoLogin(code, ex, lt, rsa string) (err error) {
 
 	bd := url.Values{
 		"code":      {code},
-		"ul":        {strconv.FormatInt(int64(len(e.studentNo)), 10)},
-		"pl":        {strconv.FormatInt(int64(len(e.password)), 10)},
+		"ul":        {strconv.FormatInt(int64(len(e.StudentNo)), 10)},
+		"pl":        {strconv.FormatInt(int64(len(e.Password)), 10)},
 		"lt":        {lt},
 		"rsa":       {rsa},
 		"execution": {ex},
