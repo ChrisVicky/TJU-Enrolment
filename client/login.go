@@ -1,13 +1,13 @@
 package client
 
 import (
-	"enrollment/client/util/ocr"
 	"enrollment/logger"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -24,7 +24,9 @@ func (e *EClient) Login() (err error) {
 		code string
 	)
 
-	if req, err = http.NewRequest(http.MethodGet, "https://sso.tju.edu.cn/cas/login", nil); err != nil {
+	loginUrl := "https://sso.tju.edu.cn/cas/login"
+
+	if req, err = http.NewRequest(http.MethodGet, loginUrl, nil); err != nil {
 		return
 	}
 	e.SetDefaultHeaders(req)
@@ -32,7 +34,13 @@ func (e *EClient) Login() (err error) {
 	if resp, err = e.Do(req); err != nil {
 		return
 	}
+
 	if resp.StatusCode == 302 {
+		logger.Info("Logged In")
+		return
+	}
+
+	if resp.Request.URL.String() != loginUrl {
 		logger.Info("Logged In")
 		return
 	}
@@ -103,9 +111,8 @@ func (e *EClient) ssoLogin(code, ex, lt, rsa string) (err error) {
 	return
 }
 
-func (e *EClient) downloadCode() (fn string, err error) {
+func (e *EClient) downloadCode(fn string) (err error) {
 	err = nil
-	fn = "code.png"
 
 	var (
 		resp      *http.Response
@@ -139,23 +146,20 @@ func (e *EClient) downloadCode() (fn string, err error) {
 }
 
 func (e *EClient) recognizeCode(fn string) (code string, err error) {
-	code, err = ocr.OcrFn(fn)
+	code, err = e.OcrFn(fn)
 	if err != nil {
-		// BUG: In Multithreading situation, this cannot function correctly
-		logger.Warnf("Auto Recognition Failed with: %v", err)
-		logger.Printf("Please take a look at file %v and Type in the code\n>", fn)
-		_, err = fmt.Scan(&code)
+		logger.Warnf("Auto recognition failed with: %v", err)
+		return
 	}
-	logger.Infof("Code Recognized: %v", code)
+	logger.Infof("Code recognized: %v", code)
 	return
 }
 
 func (e *EClient) getCode() (code string, err error) {
-	var fn string
-	// BUG: downloading code to local violate the multithreading situation
-	if fn, err = e.downloadCode(); err != nil {
+	fn := filepath.Join(logger.RUNTIME, e.StudentNo+".png")
+	if err = e.downloadCode(fn); err != nil {
 		return
 	}
-	logger.Tracef("fn: %v", fn)
+	logger.Tracef("Captcha saved to: %v", fn)
 	return e.recognizeCode(fn)
 }

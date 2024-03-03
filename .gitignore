@@ -4,3 +4,9 @@ client/util/ocr/code.png
 client/code.png
 config.toml
 code.png
+client/util/go-ddddocr
+client/util/gosseract
+__pycache__
+local.toml
+enrollment
+pack.zip

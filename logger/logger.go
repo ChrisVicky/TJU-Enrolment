@@ -14,6 +14,7 @@ var (
 	RUNTIME  = "./runtime"
 	logFn    = "app.log"
 	logfiles = []string{}
+	loglevel = logrus.DebugLevel
 )
 
 type nullWriter struct{}
@@ -33,7 +34,7 @@ func Setup(showLog bool) error {
 		logger.SetOutput(&nullWriter{})
 	}
 
-	logger.SetLevel(logrus.TraceLevel)
+	logger.SetLevel(loglevel)
 	logger.SetFormatter(
 		&prefixed.TextFormatter{
 			DisableColors:   false,
@@ -139,7 +140,7 @@ func NewLogger(fileName string, showLog bool) (ret *logrus.Logger, err error) {
 
 	if showLog {
 		ret.SetOutput(os.Stdout)
-		ret.SetLevel(logrus.TraceLevel)
+		ret.SetLevel(loglevel)
 		ret.SetFormatter(
 			&prefixed.TextFormatter{
 				DisableColors:   false,

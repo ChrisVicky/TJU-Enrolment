@@ -2,7 +2,6 @@
 package conf
 
 import (
-	"enrollment/logger"
 	"errors"
 	"os"
 
@@ -13,11 +12,10 @@ const Fn = "config.toml"
 
 // Account
 type Account struct {
-	StudentNo     string   `toml:"no"`             // Student Number
-	Password      string   `toml:"password"`       // Password
-	Comment       string   `toml:"comment"`        // comment
-	CourseNo      []string `toml:"courses"`        // Course Numbers
-	CourseComment []string `toml:"coursesComment"` // courseNames or others
+	Courses   map[string]string `toml:"courses"`  // courses: {id:comment, id:comment}
+	StudentNo string            `toml:"no"`       // Student Number
+	Password  string            `toml:"password"` // Password
+	Comment   string            `toml:"comment"`  // comment
 }
 
 // Program Specification
@@ -25,11 +23,17 @@ type Program struct {
 	Threads int `toml:"threads"` // Max Threads for Each Course
 }
 
+type Ocr struct {
+	Payload string `toml:"api"`  // payload
+	Type    int    `toml:"type"` // 0, 1, 2
+}
+
 // Configuration Main
 type Conf struct {
-	fn string    // config file name
-	Ac []Account `toml:"Account"`
-	Pg Program   `toml:"Program"`
+	fn  string    // config file name
+	Ocr Ocr       `toml:"Ocr"`
+	Ac  []Account `toml:"Account"`
+	Pg  Program   `toml:"Program"`
 }
 
 func NewConfig() *Conf {
@@ -58,11 +62,5 @@ func (c *Conf) LoadConfig() error {
 var ErrorConfig = errors.New("configuration error")
 
 func (c *Conf) clean() (err error) {
-	for _, a := range c.Ac {
-		if len(a.CourseNo) != len(a.CourseComment) {
-			err = ErrorConfig
-			logger.Errorf("%v Must Aligned with %v", a.CourseNo, a.CourseComment)
-		}
-	}
 	return err
 }

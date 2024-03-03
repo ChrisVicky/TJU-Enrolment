@@ -1,14 +1,31 @@
+Pid = "2809"
+
 [Program]
 Threads = 4
+
+
+### OCR Service has to be setup manually
+# # Script: Python Code
+# [Ocr]
+# api = "./scipt.py"
+# type = 0
+
+# # Remote Ocr server
+# [Ocr]
+# api = "https://remoteOcrServer/api"
+# type = 1
+# Local ocr server
+[Ocr]
+api = "http://127.0.0.1:8000"
+type = 2
 
 [[Account]]
 no = "3xxxxxxxxx"
 password = "0xxfffssddafd!"
-courses = ["30113", "03311", "032445"]
+courses = { 30113 = "fff", 03311 = "ffee", "032445" = "wwfff" }
 comment = "Test2"
 
 [[Account]]
 no = "30asdffgggiioo"
 password = "1dfakdflsjekf~"
-courses = ["04422", "00122"]
-comment = "Test1"
+courses = { "30113" = "fff", "03311" = "ffee", "032445" = "wwfff" }

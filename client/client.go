@@ -3,7 +3,9 @@ package client
 
 import (
 	"enrollment/client/util"
+	"enrollment/client/util/ocr"
 	"enrollment/conf"
+	"enrollment/logger"
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"
@@ -16,19 +18,38 @@ type EClient struct {
 	*util.Util
 	*conf.Account
 
-	pid string
+	ocr.OcrServer
+
+	store LessonStore // Lesson Storage
+	pid   string
+	idx   string // Id for Lesson (Map to Lesson)
 }
+
+type Lesson struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+func (l *Lesson) String() string {
+	return fmt.Sprintf("{%s:%s}", l.ID, l.Name)
+}
+
+type LessonStore map[string]*Lesson
 
 func (e *EClient) String() string {
 	c := ""
-	for idx := range e.CourseComment {
-		c += fmt.Sprintf("%s(%s),", e.CourseNo[idx], e.CourseComment[idx])
+	if e.idx != "" {
+		c += fmt.Sprintf("%s(%s)", e.idx, e.Courses[e.idx])
+	} else {
+		for k, v := range e.Courses {
+			c += fmt.Sprintf("%s(%s),", k, v)
+		}
 	}
 	return fmt.Sprintf("{%s:%s(%s), %s pid:%s}", e.StudentNo, e.Password, e.Comment, c, e.pid)
 }
 
 // studentNo, password, comment, courseId, courseComment
-func NewEClient(a *conf.Account) (*EClient, error) {
+func NewEClient(a *conf.Account, oc conf.Ocr, idx string) (*EClient, error) {
 	cj, err := cookiejar.New(
 		&cookiejar.Options{
 			PublicSuffixList: publicsuffix.List,
@@ -46,21 +67,67 @@ func NewEClient(a *conf.Account) (*EClient, error) {
 		return nil, err
 	}
 
+	o, err := ocr.NewOcrServer(oc)
+	if err != nil {
+		return nil, err
+	}
+	if err := o.Setup(); err != nil {
+		return nil, err
+	}
+
 	e := &EClient{
-		Client:  c,
-		Util:    u,
-		Account: a,
+		Client:    c,
+		Util:      u,
+		Account:   a,
+		OcrServer: o,
+		idx:       idx,
 	}
 	return e, nil
 }
 
-func (e *EClient) Refresh() (err error) {
-	if err = e.Login(); err != nil {
-		return
+func (e *EClient) Notation() string {
+	return fmt.Sprintf("%s: %s", e.Comment, e.store[e.idx])
+}
+
+type (
+	LoginError      struct{ error }
+	FetchPidError   struct{ error }
+	GetClassesError struct{ error }
+)
+
+func (e *EClient) Refresh(le error) error {
+	var err error
+	if le == nil {
+		le = LoginError{}
 	}
 
-	if err = e.FetchProfileId(); err != nil {
-		return
+	switch le.(type) {
+	case FetchPidError:
+		if err = e.fetchProfileId(); err != nil {
+			return FetchPidError{err}
+		}
+
+		logger.Tracef("Pid Fetched: %v", e.pid)
+
+		if err = e.getClasses(); err != nil {
+			return GetClassesError{err}
+		}
+
+	case GetClassesError:
+		if err = e.getClasses(); err != nil {
+			return GetClassesError{err}
+		}
+
+	default:
+		if err = e.Login(); err != nil {
+			return LoginError{err}
+		}
+		if err = e.fetchProfileId(); err != nil {
+			return FetchPidError{err}
+		}
+		if err = e.getClasses(); err != nil {
+			return GetClassesError{err}
+		}
 	}
-	return
+	return nil
 }

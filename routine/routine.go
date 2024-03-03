@@ -5,7 +5,6 @@ import (
 	"enrollment/client"
 	"enrollment/conf"
 	"enrollment/logger"
-	"fmt"
 	"sync"
 	"time"
 )
@@ -25,13 +24,18 @@ func NewRoutine() (*Routine, error) {
 		return nil, err
 	}
 
-	for idx := range r.Ac {
-		// TODO: Add Multiple Threads for each course
-		c, err := client.NewEClient(&r.Ac[idx])
-		if err != nil {
-			return nil, err
+	// Setting up multiple threads for one lesson enrollment
+	for t := 0; t < r.Pg.Threads; t++ {
+		for idx, a := range r.Ac {
+			for k, v := range a.Courses {
+				logger.Infof("Setting up Client for %v: %v", k, v)
+				c, err := client.NewEClient(&r.Ac[idx], r.Ocr, k)
+				if err != nil {
+					return nil, err
+				}
+				r.clients = append(r.clients, c)
+			}
 		}
-		r.clients = append(r.clients, c)
 	}
 
 	return r, nil
@@ -40,12 +44,13 @@ func NewRoutine() (*Routine, error) {
 func eroutine(c *client.EClient) {
 	logger.Infof("eroutine launched for: %v", c)
 	MaxRetry := 5
-	err := fmt.Errorf("Init")
+	var err error
 	for i := 0; i < MaxRetry; i++ {
-		if err := c.Refresh(); err == nil {
+		if err = c.Refresh(err); err == nil {
 			break
 		}
 		logger.Warnf("Login Error: %v, Retry Left: %v/%v", err, MaxRetry-i-1, MaxRetry)
+		time.Sleep(1000 * time.Millisecond)
 	}
 
 	if err != nil {
@@ -54,32 +59,37 @@ func eroutine(c *client.EClient) {
 	}
 
 	wg := &sync.WaitGroup{}
-	for idx := range c.CourseNo {
-		wg.Add(1)
-		go func(idx int) {
-			defer wg.Done()
-			for {
-				if err := c.Select(idx); err != nil {
-					logger.Warnf("encounter: %v", err)
-					switch err {
-					case client.ErrorSuccess:
-						break
-					case client.ErrorMax2:
-						break
-					case client.ErrorMultiple:
-						break
-					case client.ErrorSelected:
-						break
-					default:
-						time.Sleep(100 * time.Millisecond)
-						c.Refresh()
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		for {
+			if err = c.Select(); err != nil {
+				logger.Tracef("encounter: %v", err)
+				switch err {
+				case client.ErrorSuccess:
+					goto f1
+				case client.ErrorMax2:
+					goto f1
+				case client.ErrorMultiple:
+					goto f1
+				case client.ErrorSelected:
+					goto f1
+				case client.ErrorFast:
+					time.Sleep(1000 * time.Millisecond)
+				default:
+					time.Sleep(10 * time.Millisecond)
+					if err = c.Refresh(nil); err != nil {
+						// Only 1 retry
+						c.Refresh(nil)
 					}
-				} else {
-					time.Sleep(100 * time.Microsecond)
 				}
+			} else {
+				time.Sleep(10 * time.Microsecond)
 			}
-		}(idx)
-	}
+		}
+	f1:
+		logger.Infof("[%s] 结束选课: %v", c.Notation(), err)
+	}()
 	wg.Wait()
 }
 
