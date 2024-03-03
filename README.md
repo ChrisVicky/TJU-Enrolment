@@ -12,12 +12,8 @@
 ### 1. Configuration
 
 ```toml
-# Pid 为学期编号，可在选课页面通过 F12 查看如下代码：
-# <input type="hidden" name="electionProfile.id" value="2808">
-Pid = "2808"
-
 [Program]
-# 每个 Account 选课的线程数量
+# 每个 course 选课的线程数量，越多越好，但由于CPU限制，太多了也会降低总体性能
 Threads = 4
 
 
@@ -28,7 +24,7 @@ Threads = 4
 
 # # Remote Ocr server
 # [Ocr]
-# api = "https://learning.twt.edu.cn/ocr"
+# api = "https://remote.ocr.server"
 # type = 1
 
 # Local ocr server
@@ -37,14 +33,18 @@ api = "http://127.0.0.1:8000/uploadfile/"
 type = 2
 
 # [[Account]]
-# no = "3020202184" # 学号
-# password = "0407Christopher!" # 密码
-# courses = { 02172 = "毕业设计（论文）", 01320 = "形势与政策" }
-# comment = "刘锦帆"
+# no = "ixxxv" # 学号
+# password = "ixxxx" # 密码
+# courses = { 02572 = "毕计", 01360 = "形与" }
+# comment = "ffff"
 
 [[Account]]
-no = "3023207213"
-password = "114514henghenga~"
-courses = { 02688 = "体育B-羽毛球", 06487 = "体育B-游泳" }
-comment = "陈祎唯"
+no = "303103049"
+password = "11rrrga~"
+courses = { 02688 = "B-毛球", 06587 = "育B-泳" }
+comment = "rrrddd"
 ```
+
+- 选择本地 ocr 则需要额外配置 ocr 的 python （在 ./client/util/ocr/localDdddocr/README.md)
+
+### 2. Start OCR (if local)

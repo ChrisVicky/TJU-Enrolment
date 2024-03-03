@@ -10,3 +10,6 @@ __pycache__
 local.toml
 enrollment
 pack.zip
+enrollment.bin
+enrollment.exe
+src*.zip

@@ -1,6 +1,7 @@
 NAME=enrollment
 WINEXE=$(NAME).exe
-EXE=$(WINEXE)
+LINUXEXE=$(NAME).bin
+# EXE=$(WINEXE)
 CONF=config.toml
 GIT_ZIP=src-$(shell date +"%Y-%m-%d").zip
 PACK_ZIP=pack-$(shell date +"%Y-%m-%d").zip
@@ -10,7 +11,8 @@ PDF_DST=README.pdf
 all: build archive
 
 build:
-	GOOS=windows GOARCH=amd64 go build -o $(EXE) .
+	GOOS=linux GOARCH=amd64 go build -o $(LINUXEXE) .
+	GOOS=windows GOARCH=amd64 go build -o $(WINEXE) .
 
 zip: archive pdf
 	rm -f $(PACK_ZIP)
