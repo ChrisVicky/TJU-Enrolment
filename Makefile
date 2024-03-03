@@ -14,7 +14,7 @@ build:
 	GOOS=linux GOARCH=amd64 go build -o $(LINUXEXE) .
 	GOOS=windows GOARCH=amd64 go build -o $(WINEXE) .
 
-zip: archive pdf
+zip: archive 
 	rm -f $(PACK_ZIP)
 	zip -r $(PACK_ZIP) $(EXE) $(GIT_ZIP) $(PDF_DST) $(CONF)
 	make clean
@@ -25,7 +25,7 @@ archive: build
 clean:
 	rm -f $(EXE) $(GIT_ZIP) $(PDF_DST)
 
-pdf: $(PDF_SRC)
-	pandoc --pdf-engine=xelatex -V CJKmainfont="Songti TC" -V mainfont="OperatorMono Nerd Font" $(PDF_SRC) -o $(PDF_DST)
+# pdf: $(PDF_SRC)
+# 	pandoc --pdf-engine=xelatex -V CJKmainfont="Songti TC" -V mainfont="OperatorMono Nerd Font" $(PDF_SRC) -o $(PDF_DST)
 
 .PHONY: all build zip clean pdf
