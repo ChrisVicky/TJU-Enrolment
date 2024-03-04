@@ -1,7 +1,9 @@
 NAME=enrollment
 WINEXE=$(NAME).exe
-LINUXEXE=$(NAME).bin
-# EXE=$(WINEXE)
+LINUXEXE=$(NAME).linux
+MACEXE=$(NAME).mac
+EXE=$(WINEXE) $(LINUXEXE) $(MACEXE)
+TESTFILE=test.png
 CONF=config.toml
 GIT_ZIP=src-$(shell date +"%Y-%m-%d").zip
 PACK_ZIP=pack-$(shell date +"%Y-%m-%d").zip
@@ -13,10 +15,12 @@ all: build archive
 build:
 	GOOS=linux GOARCH=amd64 go build -o $(LINUXEXE) .
 	GOOS=windows GOARCH=amd64 go build -o $(WINEXE) .
+	GOOS=darwin GOARCH=amd64 go build -o $(MACEXE) .
+
 
 zip: archive 
 	rm -f $(PACK_ZIP)
-	zip -r $(PACK_ZIP) $(EXE) $(GIT_ZIP) $(PDF_DST) $(CONF)
+	zip -r $(PACK_ZIP) $(TESTFILE) $(EXE) $(GIT_ZIP) $(PDF_DST) $(CONF)
 	make clean
 
 archive: build
