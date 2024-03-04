@@ -3,12 +3,13 @@ WINEXE=$(NAME).exe
 LINUXEXE=$(NAME).linux
 MACEXE=$(NAME).mac
 EXE=$(WINEXE) $(LINUXEXE) $(MACEXE)
-TESTFILE=test.png
-CONF=config.toml
 GIT_ZIP=src-$(shell date +"%Y-%m-%d").zip
 PACK_ZIP=pack-$(shell date +"%Y-%m-%d").zip
 PDF_SRC=README.md
 PDF_DST=README.pdf
+
+CONF=config.toml
+TESTFILE=test.png
 
 all: build archive
 
@@ -20,7 +21,7 @@ build:
 
 zip: archive 
 	rm -f $(PACK_ZIP)
-	zip -r $(PACK_ZIP) $(TESTFILE) $(EXE) $(GIT_ZIP) $(PDF_DST) $(CONF)
+	zip -r $(PACK_ZIP) $(TESTFILE) $(EXE) $(GIT_ZIP) $(PDF_SRC) $(CONF)
 	make clean
 
 archive: build
