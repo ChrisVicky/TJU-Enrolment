@@ -13,13 +13,16 @@
 
 - 修改 `config.toml` 适配自己的需求
 
+  - `mv ./conf/example.toml config.toml`
+  - 修改 `config.toml`
+
 - 选择本地 ocr server 需要额外配置 ocr 的 python （ `./client/util/ocr/localDdddocr/README.md`)
 
 ### 2. Start OCR (if local)
 
 - 查看其中的 README.md 进行配置
 
-### 3. Start Helper
+### 3. Start
 
 - 使用预先编译好的代码：
 
