@@ -1,8 +1,9 @@
 NAME=enrolment
 WINEXE=$(NAME).exe
 LINUXEXE=$(NAME).linux
-MACEXE=$(NAME).mac
-EXE=$(WINEXE) $(LINUXEXE) $(MACEXE)
+MACEXEINTEL=$(NAME).intel.mac
+MACEXEM=$(NAME).m.mac
+EXE=$(WINEXE) $(LINUXEXE) $(MACEXEM) $(MACEXEINTEL)
 GIT_ZIP=src-$(shell date +"%Y-%m-%d").zip
 PACK_ZIP=pack-$(shell date +"%Y-%m-%d").zip
 PDF_SRC=README.md
@@ -16,8 +17,8 @@ all: build archive
 build:
 	GOOS=linux GOARCH=amd64 go build -o $(LINUXEXE) .
 	GOOS=windows GOARCH=amd64 go build -o $(WINEXE) .
-	GOOS=darwin GOARCH=amd64 go build -o $(MACEXE) .
-
+	GOOS=darwin GOARCH=amd64 go build -o $(MACEXEM) .
+	GOOS=darwin GOARCH=arm64 go build -o $(MACEXEINTEL) .
 
 zip: archive 
 	rm -f $(PACK_ZIP)

@@ -14,3 +14,7 @@ enrollment.bin
 enrollment.exe
 src*.zip
 pack*.zip
+enrolment.intel.mac
+enrolment.linux
+enrolment.m.mac
+enrolment.mac

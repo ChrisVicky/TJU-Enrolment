@@ -26,8 +26,9 @@
 
 - 使用预先编译好的代码：
 
-  - Mac (Intel): `enrolment.mac`
-  - Linux (x86_64): `enrolment.linux`
+  - Mac (Intel): `enrolment.intel.mac`
+  - Mac (M): `enrolment.m.mac`
+  - Linux (x86_64): `enrolment.intel.linux`
   - Windows (x86_64): `enrolment.exe`
 
 - 使用 Golang
