@@ -1,7 +1,7 @@
 package client
 
 import (
-	"enrollment/logger"
+	"enrolment/logger"
 	"errors"
 	"fmt"
 	"io"

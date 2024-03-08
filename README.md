@@ -16,13 +16,32 @@
 - 选择本地 ocr server 需要额外配置 ocr 的 python （ `./client/util/ocr/localDdddocr/README.md`)
 
 ### 2. Start OCR (if local)
+
 - 查看其中的 README.md 进行配置
 
 ### 3. Start Helper
-- 使用预先编译好的代码：
-    - Mac (Intel): `enrolment.mac`
-    - Linux (x86_64): `enrolment.linux`
-    - Windows (x86_64): `enrolment.exe`
 
-- 使用 Golang 
-    - go run main.go
+- 使用预先编译好的代码：
+
+  - Mac (Intel): `enrolment.mac`
+  - Linux (x86_64): `enrolment.linux`
+  - Windows (x86_64): `enrolment.exe`
+
+- 使用 Golang
+  - go run main.go
+
+## Coding
+
+```
+.
+|-- client              - Enrolment Client
+|   `-- util            - Js Encoder & OCR Helper
+|       |-- jsencoder
+|       `-- ocr
+|-- conf                - Configuration
+|-- logger              - Logger Issues
+|-- routine             - GoRoutine Helper
+`-- runtime
+
+15 directories
+```

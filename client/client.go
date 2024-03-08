@@ -1,11 +1,11 @@
-// Package client specify enrollment client
+// Package client specify enrolment client
 package client
 
 import (
-	"enrollment/client/util"
-	"enrollment/client/util/ocr"
-	"enrollment/conf"
-	"enrollment/logger"
+	"enrolment/client/util"
+	"enrolment/client/util/ocr"
+	"enrolment/conf"
+	"enrolment/logger"
 	"fmt"
 	"net/http"
 	"net/http/cookiejar"

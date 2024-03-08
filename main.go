@@ -1,8 +1,8 @@
 package main
 
 import (
-	"enrollment/logger"
-	"enrollment/routine"
+	"enrolment/logger"
+	"enrolment/routine"
 )
 
 func main() {

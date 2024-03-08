@@ -2,9 +2,9 @@
 package routine
 
 import (
-	"enrollment/client"
-	"enrollment/conf"
-	"enrollment/logger"
+	"enrolment/client"
+	"enrolment/conf"
+	"enrolment/logger"
 	"sync"
 	"time"
 )
@@ -24,7 +24,7 @@ func NewRoutine() (*Routine, error) {
 		return nil, err
 	}
 
-	// Setting up multiple threads for one lesson enrollment
+	// Setting up multiple threads for one lesson enrolment
 	for t := 0; t < r.Pg.Threads; t++ {
 		for idx, a := range r.Ac {
 			for k, v := range a.Courses {

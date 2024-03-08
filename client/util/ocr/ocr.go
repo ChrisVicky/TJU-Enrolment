@@ -1,9 +1,9 @@
 package ocr
 
 import (
-	localddddocr "enrollment/client/util/ocr/localDdddocr"
-	remoteserver "enrollment/client/util/ocr/remoteServer"
-	"enrollment/conf"
+	localddddocr "enrolment/client/util/ocr/localDdddocr"
+	remoteserver "enrolment/client/util/ocr/remoteServer"
+	"enrolment/conf"
 	"fmt"
 )
 

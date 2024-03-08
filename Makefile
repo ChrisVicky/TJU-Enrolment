@@ -1,4 +1,4 @@
-NAME=enrollment
+NAME=enrolment
 WINEXE=$(NAME).exe
 LINUXEXE=$(NAME).linux
 MACEXE=$(NAME).mac

@@ -1,7 +1,7 @@
 package conf_test
 
 import (
-	"enrollment/conf"
+	"enrolment/conf"
 	"fmt"
 )
 

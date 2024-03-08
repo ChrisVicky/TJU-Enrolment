@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	logger   *logrus.Logger
+	logger   = logrus.New()
 	RUNTIME  = "./runtime"
 	logFn    = "app.log"
 	logfiles = []string{}
@@ -27,8 +27,6 @@ func (*nullWriter) Write(p []byte) (n int, err error) {
 func Setup(showLog bool) error {
 	// Mkdir & Return error if it exists
 	os.Mkdir(RUNTIME, os.ModePerm)
-
-	logger = logrus.New()
 
 	if !showLog {
 		logger.SetOutput(&nullWriter{})

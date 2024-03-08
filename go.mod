@@ -1,4 +1,4 @@
-module enrollment
+module enrolment
 
 go 1.21.5
 

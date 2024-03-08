@@ -1,8 +1,8 @@
 package util
 
 import (
-	"enrollment/client/util/jsencoder"
-	"enrollment/logger"
+	"enrolment/client/util/jsencoder"
+	"enrolment/logger"
 	"fmt"
 	"net/http"
 	"regexp"

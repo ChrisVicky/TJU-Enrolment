@@ -1,7 +1,7 @@
 package logger_test
 
 import (
-	"enrollment/logger"
+	"enrolment/logger"
 	"fmt"
 )
 
