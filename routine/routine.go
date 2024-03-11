@@ -25,6 +25,7 @@ func NewRoutine() (*Routine, error) {
 	}
 
 	// Setting up multiple threads for one lesson enrolment
+	// TODO: Add Mutex to control the same course
 	for t := 0; t < r.Pg.Threads; t++ {
 		for idx, a := range r.Ac {
 			for k, v := range a.Courses {
